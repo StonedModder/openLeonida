@@ -2576,17 +2576,21 @@
 
   window.addEventListener('resize', function () { markers.schedule(); });
 
-  // tile health note (only when the local pyramid is largely missing)
-  setTimeout(function () {
+  // Tile health: probe a known tile directly. Leaflet's errorTileUrl placeholder fires
+  // 'tileload' even when the real tile 404s, so event counters cannot tell "no imagery"
+  // apart from "imagery present" — an explicit Image() probe can.
+  (function tileHealthProbe() {
     var note = document.getElementById('mapNote');
-    if (tileLoads === 0 && tileErrors > 6) {
-      note.textContent = 'Local map tiles are missing — run tools/download_tiles.py to fetch the pyramid.';
+    if (!note) return;
+    var probe = new Image();
+    probe.onerror = function () {
+      note.textContent = '\u26a0 Map imagery is missing from this copy — the tiles/ folder (and tiles-night/) was not included.';
       note.hidden = false;
-    } else if (tileLoads < 8 && tileErrors > 40) {
-      note.textContent = 'Some local tiles are still missing (partial download).';
-      note.hidden = false;
-    }
-  }, 4500);
+      note.classList.add('warn');
+    };
+    probe.onload = function () { note.hidden = true; note.classList.remove('warn'); };
+    probe.src = 'tiles/8/127/127.jpg';
+  })();
 
   /* ----------------------------------------------------------- debug hook */
   window.__gta6 = {
