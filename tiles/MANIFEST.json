@@ -1,0 +1,129 @@
+{
+ "theme": "day",
+ "updated": "2026-11-19T21:49:02+00:00",
+ "zooms": {
+  "8": {
+   "z": 8,
+   "x0": 127,
+   "x1": 127,
+   "y0": 127,
+   "y1": 127,
+   "expected": 1,
+   "downloaded": 1,
+   "absent": 0,
+   "bytes": 10513,
+   "complete": true,
+   "absent_coords": []
+  },
+  "9": {
+   "z": 9,
+   "x0": 254,
+   "x1": 255,
+   "y0": 254,
+   "y1": 255,
+   "expected": 4,
+   "downloaded": 4,
+   "absent": 0,
+   "bytes": 37578,
+   "complete": true,
+   "absent_coords": []
+  },
+  "10": {
+   "z": 10,
+   "x0": 508,
+   "x1": 511,
+   "y0": 508,
+   "y1": 511,
+   "expected": 16,
+   "downloaded": 16,
+   "absent": 0,
+   "bytes": 132329,
+   "complete": true,
+   "absent_coords": []
+  },
+  "11": {
+   "z": 11,
+   "x0": 1016,
+   "x1": 1023,
+   "y0": 1016,
+   "y1": 1023,
+   "expected": 64,
+   "downloaded": 64,
+   "absent": 0,
+   "bytes": 466615,
+   "complete": true,
+   "absent_coords": []
+  },
+  "12": {
+   "z": 12,
+   "x0": 2032,
+   "x1": 2047,
+   "y0": 2032,
+   "y1": 2047,
+   "expected": 256,
+   "downloaded": 256,
+   "absent": 0,
+   "bytes": 1620839,
+   "complete": true,
+   "absent_coords": []
+  },
+  "13": {
+   "z": 13,
+   "x0": 4064,
+   "x1": 4095,
+   "y0": 4064,
+   "y1": 4095,
+   "expected": 1024,
+   "downloaded": 1024,
+   "absent": 0,
+   "bytes": 5433906,
+   "complete": true,
+   "absent_coords": []
+  },
+  "14": {
+   "z": 14,
+   "x0": 8128,
+   "x1": 8191,
+   "y0": 8128,
+   "y1": 8191,
+   "expected": 4096,
+   "downloaded": 4096,
+   "absent": 0,
+   "bytes": 18061405,
+   "complete": true,
+   "absent_coords": []
+  },
+  "15": {
+   "z": 15,
+   "x0": 16256,
+   "x1": 16383,
+   "y0": 16256,
+   "y1": 16383,
+   "expected": 16384,
+   "downloaded": 16384,
+   "absent": 0,
+   "bytes": 61221651,
+   "complete": true,
+   "absent_coords": []
+  },
+  "16": {
+   "z": 16,
+   "x0": 32512,
+   "x1": 32767,
+   "y0": 32512,
+   "y1": 32767,
+   "expected": 65536,
+   "downloaded": 65536,
+   "absent": 0,
+   "bytes": 214135111,
+   "complete": true,
+   "absent_coords": []
+  }
+ },
+ "totals": {
+  "expected": 87381,
+  "downloaded": 87381,
+  "absent": 0,
+  "bytes": 301119947
+ }
+}
