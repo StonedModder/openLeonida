@@ -808,3 +808,68 @@ body.lb-open { overflow: hidden; }
   .lb-prev, .lb-next { width: 34px; height: 34px; }
   .heat-groups { max-height: 240px; }
 }
+
+/* ----------------------------------------------------------- support / modal */
+.support-row {
+  display: flex; gap: 8px; margin: 0 0 10px;
+}
+.sbtn {
+  flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 8px 10px; font: inherit; font-size: 12px; font-weight: 600; letter-spacing: .2px;
+  color: var(--txt); background: var(--panel-2); border: 1px solid var(--line);
+  border-radius: 10px; cursor: pointer; transition: background .15s, border-color .15s, color .15s;
+}
+.sbtn svg { width: 15px; height: 15px; flex: 0 0 15px; }
+.sbtn:hover { background: var(--panel-3); border-color: #2c3a4f; }
+.sbtn:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+#btnDonate:hover { color: #ffd7e8; border-color: #4a2436; }
+#btnDiscord:hover { color: #cfe9ff; border-color: #22384f; }
+
+.smodal { position: fixed; inset: 0; z-index: 3000; display: grid; place-items: center; padding: 18px; }
+.smodal[hidden] { display: none; }
+.smodal-bg { position: absolute; inset: 0; background: rgba(4, 7, 11, .72); backdrop-filter: blur(3px); }
+.smodal-card {
+  position: relative; width: min(560px, 100%); max-height: min(82vh, 720px); overflow: auto;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+  box-shadow: var(--shadow); animation: smodal-in .16s ease-out;
+}
+@keyframes smodal-in { from { opacity: 0; transform: translateY(8px) scale(.985); } to { opacity: 1; transform: none; } }
+.smodal-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 16px; border-bottom: 1px solid var(--line-soft); position: sticky; top: 0;
+  background: var(--panel); z-index: 1;
+}
+.smodal-head h2 { margin: 0; font-size: 15px; letter-spacing: .3px; }
+.smodal-body { padding: 14px 16px 18px; }
+.smodal-lead { margin: 0 0 14px; color: var(--dim); font-size: 12.5px; line-height: 1.55; }
+.qr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.qr-item {
+  background: var(--panel-2); border: 1px solid var(--line-soft); border-radius: 12px;
+  padding: 12px; text-align: center; display: flex; flex-direction: column; gap: 9px; align-items: center;
+}
+.qr-item img { width: 132px; height: 132px; border-radius: 8px; background: #fff; padding: 6px; display: block; }
+.qr-item .qr-name { font-size: 12px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase; color: var(--dim); }
+.qr-item a.qr-link, .qr-item .qr-link {
+  font-size: 11.5px; color: var(--accent-2); text-decoration: none; word-break: break-all;
+}
+.qr-item a.qr-link:hover { text-decoration: underline; }
+.addr {
+  font-family: var(--mono); font-size: 10.5px; color: var(--dim); word-break: break-all;
+  background: var(--panel-3); border: 1px solid var(--line-soft); border-radius: 8px; padding: 7px 8px; width: 100%;
+}
+.copy-btn {
+  font: inherit; font-size: 11px; font-weight: 600; color: var(--txt);
+  background: var(--panel-3); border: 1px solid var(--line); border-radius: 8px;
+  padding: 6px 10px; cursor: pointer;
+}
+.copy-btn:hover { border-color: #2c3a4f; background: #1d293d; }
+.smodal-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.smodal-actions a.cta {
+  flex: 1 1 auto; text-align: center; text-decoration: none; font-size: 12.5px; font-weight: 700;
+  padding: 11px 14px; border-radius: 10px; color: #071018; background: var(--accent-2);
+}
+.smodal-actions a.cta.alt { background: #5865f2; color: #fff; }
+.smodal-actions a.cta:hover { filter: brightness(1.08); }
+@media (max-width: 520px) {
+  .qr-item img { width: 116px; height: 116px; }
+}
