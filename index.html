@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en" data-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>GTA 6 — Leonida Interactive Map (offline)</title>
+<meta name="description" content="Offline, account-free copy of the GTA 6 Leonida interactive map with collectible tracking.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0e14'/%3E%3Cpath d='M14 40 L24 24 L32 36 L40 18 L50 40 Z' fill='none' stroke='%23ff2e88' stroke-width='4' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='47' r='4' fill='%2322d3ee'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<noscript><div class="noscript">This offline map needs JavaScript enabled.</div></noscript>
+
+<div id="app">
+  <aside id="sidebar" aria-label="Filters and progress">
+    <header class="sb-head">
+      <div class="brand-row">
+        <div class="brand">
+          <span class="brand-kicker">Grand Theft Auto VI</span>
+          <span class="brand-title">LEONIDA <em>map</em></span>
+        </div>
+        <button id="sbClose" class="icon-btn sb-close" type="button" aria-label="Close sidebar">✕</button>
+      </div>
+      <div class="head-meta" id="headMeta">2,532 markers · 81 types · 3 sections</div>
+      <div class="progress-hero">
+        <div class="ph-top">
+          <span id="ovLabel">0 / 2,532 found</span>
+          <span id="ovPct">0%</span>
+        </div>
+        <div class="bar big"><i id="ovBar" style="width:0%"></i></div>
+        <div class="ph-sub"><span id="ovLeft">2,532 remaining</span><span class="ph-offline" title="No network access at runtime">offline</span></div>
+      </div>
+      <div class="search-wrap">
+        <svg class="s-ico" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input id="search" type="search" autocomplete="off" spellcheck="false" placeholder="Search markers, types, notes…" aria-label="Search markers, types and notes">
+        <button id="searchClear" class="icon-btn s-clear" type="button" aria-label="Clear search" hidden>✕</button>
+      </div>
+    </header>
+
+    <div class="sb-scroll" id="sbScroll">
+      <section id="searchPanel" hidden aria-label="Search results">
+        <div class="panel-head"><span id="searchCount">0 results</span><span class="panel-hint">click to fly</span></div>
+        <div id="typeJumps" class="type-jumps"></div>
+        <div id="results" class="results"></div>
+      </section>
+
+      <section id="heatPanel" class="fold" aria-label="Heatmaps">
+        <div class="panel-head">
+          <button id="heatToggle" class="fold-head" type="button" aria-expanded="false" aria-controls="heatBody">
+            <svg class="fold-caret" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 1.5 L7 5 L3 8.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Heatmaps</span>
+          </button>
+          <span class="fold-meta" id="heatMeta">0 layers</span>
+        </div>
+        <div class="fold-body" id="heatBody" hidden>
+          <label class="switch-row" for="heatOn">
+            <span><b>Show heatmap overlay</b><small>density of the selected layers</small></span>
+            <input id="heatOn" type="checkbox">
+            <i class="switch" aria-hidden="true"></i>
+          </label>
+          <div class="heat-tools">
+            <input id="heatFilter" type="search" placeholder="Filter layers…" aria-label="Filter heatmap layers" autocomplete="off">
+            <button class="mini" data-heat="all" type="button">all</button>
+            <button class="mini" data-heat="none" type="button">none</button>
+          </div>
+          <div id="heatGroups" class="heat-groups"></div>
+          <div class="heat-stat" id="heatStat">No layers enabled</div>
+        </div>
+      </section>
+
+      <section id="listPanel" class="fold" aria-label="My checklists">
+        <div class="panel-head">
+          <button id="listsToggle" class="fold-head" type="button" aria-expanded="false" aria-controls="listsBody">
+            <svg class="fold-caret" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 1.5 L7 5 L3 8.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>My checklists</span>
+          </button>
+          <span class="fold-meta" id="listMeta">0</span>
+        </div>
+        <div class="fold-body" id="listsBody" hidden>
+          <div class="inline-add">
+            <input id="newListName" type="text" maxlength="60" placeholder="New checklist name" aria-label="New checklist name">
+            <button id="newListBtn" class="mini" type="button">Add</button>
+          </div>
+          <div id="lists" class="lists"></div>
+          <p class="fineprint">Checklists are yours: created and stored locally. A marker's found state stays global.</p>
+        </div>
+      </section>
+
+      <section id="customPanel" class="fold" aria-label="My markers">
+        <div class="panel-head">
+          <button id="customToggle" class="fold-head" type="button" aria-expanded="false" aria-controls="customBody">
+            <svg class="fold-caret" viewBox="0 0 10 10" aria-hidden="true"><path d="M3 1.5 L7 5 L3 8.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>My markers</span>
+          </button>
+          <span class="fold-meta" id="customMeta">0</span>
+        </div>
+        <div class="fold-body" id="customBody" hidden>
+          <button id="addMarkerBtn" class="btn wide" type="button" aria-pressed="false">＋ Add marker — then click the map</button>
+          <div id="customList" class="custom-list"></div>
+        </div>
+      </section>
+
+      <section id="treePanel" aria-label="Categories">
+        <div class="panel-head">
+          <span>Categories</span>
+          <span class="head-actions"><button class="mini" data-global="all" type="button">all</button><button class="mini" data-global="none" type="button">none</button></span>
+        </div>
+        <div class="jump-row">
+          <select id="typeJump" aria-label="Jump to a type"></select>
+        </div>
+
+        <div class="region-ctl" id="regionCtl">
+          <div class="region-toggles">
+            <label class="chip-btn" title="Toggle region outlines">
+              <input id="regionsShapes" type="checkbox" checked>
+              <span>Region shapes</span>
+            </label>
+            <label class="chip-btn" title="Toggle region labels">
+              <input id="regionsLabels" type="checkbox" checked>
+              <span>Labels</span>
+            </label>
+          </div>
+          <div id="regions" class="regions"></div>
+        </div>
+
+        <div id="tree" class="tree"></div>
+      </section>
+
+      <section class="tools-panel" aria-label="Tracking tools">
+        <div class="seg" id="completionSeg" role="group" aria-label="Completion filter">
+          <button type="button" data-completion="all" class="on" aria-pressed="true">All <b id="cAll">0</b></button>
+          <button type="button" data-completion="found" aria-pressed="false">Complete <b id="cFound">0</b></button>
+          <button type="button" data-completion="unfound" aria-pressed="false">Incomplete <b id="cLeft">0</b></button>
+        </div>
+        <label class="switch-row" for="hideFound">
+          <span><b>Hide found</b><small>keep only what is left to collect</small></span>
+          <input id="hideFound" type="checkbox">
+          <i class="switch" aria-hidden="true"></i>
+        </label>
+        <div class="chip-row">
+          <label class="chip-btn"><input id="onlyNotes" type="checkbox"><span>Only with notes</span></label>
+          <label class="chip-btn" id="onlyListWrap" hidden><input id="onlyList" type="checkbox"><span id="onlyListName">Only list</span></label>
+        </div>
+        <div class="tool-grid">
+          <button id="btnExport" class="btn" type="button">Export</button>
+          <button id="btnImport" class="btn" type="button">Import</button>
+          <input id="fileInput" type="file" accept="application/json,.json" hidden>
+          <button id="btnReset" class="btn danger" type="button">Reset</button>
+        </div>
+        <p class="fineprint">Progress, notes, markers and checklists are stored only in this browser (localStorage). No account, nothing uploaded.</p>
+      </section>
+
+      <footer class="sb-foot">
+        <p>Map data &amp; tiles © IGN / MapGenie — unofficial offline mirror. GTA 6 © Rockstar Games.</p>
+        <p class="tiny">Not affiliated with Rockstar Games or IGN. For personal use.</p>
+      </footer>
+    </div>
+  </aside>
+
+  <div id="backdrop" hidden></div>
+
+  <main id="mapwrap">
+    <div id="map" role="application" aria-label="Leonida map"></div>
+
+    <div class="map-top">
+      <button id="sbToggle" class="map-btn" type="button" aria-label="Open filters" aria-expanded="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Filters</span>
+      </button>
+      <div class="legend" aria-hidden="true">
+        <span><i class="dot loc"></i>Locations</span>
+        <span><i class="dot col"></i>Collections</span>
+        <span><i class="dot act"></i>Activities</span>
+      </div>
+    </div>
+
+    <div class="map-tools">
+      <button id="themeBtn" class="map-btn sq" type="button" title="Toggle day / night tiles" aria-label="Toggle day or night tiles">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path id="themeIcon" d="M10 3.2v2M10 14.8v2M3.2 10h2M14.8 10h2M5.2 5.2l1.4 1.4M13.4 13.4l1.4 1.4M14.8 5.2l-1.4 1.4M6.6 13.4l-1.4 1.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="10" r="3.1" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      </button>
+      <div class="zoom-stack">
+        <button id="zoomIn" class="map-btn sq" type="button" aria-label="Zoom in">+</button>
+        <button id="zoomOut" class="map-btn sq" type="button" aria-label="Zoom out">−</button>
+      </div>
+      <button id="fitBtn" class="map-btn sq" type="button" title="Fit whole map" aria-label="Fit whole map">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7V4h3M17 7V4h-3M3 13v3h3M17 13v3h-3" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <div id="addForm" class="add-form" hidden>
+      <div class="af-head">New marker</div>
+      <input id="afName" type="text" maxlength="80" placeholder="Marker name" aria-label="Marker name">
+      <div class="af-colors" id="afColors" role="group" aria-label="Marker colour"></div>
+      <textarea id="afNote" rows="2" maxlength="500" placeholder="Note (optional)" aria-label="Marker note"></textarea>
+      <div class="af-actions">
+        <button id="afSave" class="btn primary" type="button">Save marker</button>
+        <button id="afCancel" class="btn" type="button">Cancel</button>
+      </div>
+    </div>
+
+    <div id="hoverTip" class="hover-tip" hidden></div>
+    <div id="mapNote" class="map-note" hidden></div>
+    <div id="toast" class="toast" hidden role="status" aria-live="polite"></div>
+    <div id="errBox" class="err-box" hidden><b>Script error</b><pre id="errMsg"></pre></div>
+
+    <div class="map-attr">Map data &amp; tiles © IGN / MapGenie — unofficial offline mirror. GTA 6 © Rockstar Games.</div>
+  </main>
+</div>
+
+<div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Marker screenshot">
+  <button id="lbClose" class="lb-btn lb-close" type="button" aria-label="Close screenshot">✕</button>
+  <button id="lbPrev" class="lb-btn lb-prev" type="button" aria-label="Previous screenshot">‹</button>
+  <img id="lbImg" alt="" src="assets/blank.gif">
+  <button id="lbNext" class="lb-btn lb-next" type="button" aria-label="Next screenshot">›</button>
+  <div id="lbCount" class="lb-count"></div>
+</div>
+
+<script>window.__mapLoadErrors = [];</script>
+<script src="vendor/leaflet/leaflet.js" onerror="window.__mapLoadErrors.push('vendor/leaflet/leaflet.js')"></script>
+<script src="data/markers.js" onerror="window.__mapLoadErrors.push('data/markers.js')"></script>
+<script src="data/taxonomy.js" onerror="window.__mapLoadErrors.push('data/taxonomy.js')"></script>
+<script src="data/icons.js" onerror="window.__mapLoadErrors.push('data/icons.js')"></script>
+<script src="data/meta.js" onerror="window.__mapLoadErrors.push('data/meta.js')"></script>
+<script src="data/images.js" onerror="window.__mapLoadErrors.push('data/images.js')"></script>
+<script src="data/regions.js" onerror="window.__mapLoadErrors.push('data/regions.js')"></script>
+<script src="data/heatmaps.js" onerror="window.__mapLoadErrors.push('data/heatmaps.js')"></script>
+<script src="heat.js" onerror="window.__mapLoadErrors.push('heat.js')"></script>
+<script src="app.js" onerror="window.__mapLoadErrors.push('app.js')"></script>
+</body>
+</html>
