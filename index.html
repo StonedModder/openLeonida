@@ -153,7 +153,8 @@
       </section>
 
       <footer class="sb-foot">
-        <p>GTA 6 © Rockstar Games — unofficial offline map.</p>
+        <p>Map data &amp; tiles © IGN / MapGenie — unofficial offline mirror. GTA 6 © Rockstar Games.</p>
+        <p class="tiny">Not affiliated with Rockstar Games or IGN. For personal use.</p>
       </footer>
     </div>
   </aside>
@@ -204,7 +205,7 @@
     <div id="toast" class="toast" hidden role="status" aria-live="polite"></div>
     <div id="errBox" class="err-box" hidden><b>Script error</b><pre id="errMsg"></pre></div>
 
-    <div class="map-attr">GTA 6 © Rockstar Games — unofficial offline map.</div>
+    <div class="map-attr">Map data &amp; tiles © IGN / MapGenie — unofficial offline mirror. GTA 6 © Rockstar Games.</div>
   </main>
 </div>
 
@@ -216,15 +217,16 @@
   <div id="lbCount" class="lb-count"></div>
 </div>
 
-<script src="vendor/leaflet/leaflet.js"></script>
-<script src="data/markers.js"></script>
-<script src="data/taxonomy.js"></script>
-<script src="data/icons.js"></script>
-<script src="data/meta.js"></script>
-<script src="data/images.js"></script>
-<script src="data/regions.js"></script>
-<script src="data/heatmaps.js"></script>
-<script src="heat.js"></script>
-<script src="app.js"></script>
+<script>window.__mapLoadErrors = [];</script>
+<script src="vendor/leaflet/leaflet.js" onerror="window.__mapLoadErrors.push('vendor/leaflet/leaflet.js')"></script>
+<script src="data/markers.js" onerror="window.__mapLoadErrors.push('data/markers.js')"></script>
+<script src="data/taxonomy.js" onerror="window.__mapLoadErrors.push('data/taxonomy.js')"></script>
+<script src="data/icons.js" onerror="window.__mapLoadErrors.push('data/icons.js')"></script>
+<script src="data/meta.js" onerror="window.__mapLoadErrors.push('data/meta.js')"></script>
+<script src="data/images.js" onerror="window.__mapLoadErrors.push('data/images.js')"></script>
+<script src="data/regions.js" onerror="window.__mapLoadErrors.push('data/regions.js')"></script>
+<script src="data/heatmaps.js" onerror="window.__mapLoadErrors.push('data/heatmaps.js')"></script>
+<script src="heat.js" onerror="window.__mapLoadErrors.push('heat.js')"></script>
+<script src="app.js" onerror="window.__mapLoadErrors.push('app.js')"></script>
 </body>
 </html>

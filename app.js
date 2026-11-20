@@ -34,7 +34,22 @@
   if (!HEAT.layers) HEAT.layers = {};
 
   if (!META || !MARKERS || !TAX || !ICONS || !window.L) {
-    fail('Map data failed to load (missing global GTA6_* payload or Leaflet).');
+    // Name exactly what failed: a generic message sends people looking in the wrong
+    // place, which is what happened when a partial download dropped a data file.
+    var missing = [];
+    if (!window.L) missing.push('vendor/leaflet/leaflet.js');
+    if (!MARKERS) missing.push('data/markers.js');
+    if (!TAX) missing.push('data/taxonomy.js');
+    if (!ICONS) missing.push('data/icons.js');
+    if (!META) missing.push('data/meta.js');
+    var failed = (window.__mapLoadErrors || []).slice();
+    var detail = missing.length ? 'Could not load: ' + missing.join(', ') + '.' : '';
+    if (failed.length) {
+      detail += (detail ? ' ' : '') + 'The browser reported these files as unloadable: ' + failed.join(', ') + '.';
+    }
+    fail('Map data failed to load. ' + (detail ||
+      'A data payload is missing.') +
+      ' Check that the data/ and vendor/ folders sit next to index.html and that the archive was fully extracted.');
     return;
   }
 
