@@ -2611,6 +2611,128 @@
     probe.src = 'tiles/8/127/127.jpg';
   })();
 
+  /* ------------------------------------------------------- support / donate */
+  (function supportUI() {
+    var modal = document.getElementById('supportModal');
+    var body = document.getElementById('smodalBody');
+    var title = document.getElementById('smodalTitle');
+    var btnDonate = document.getElementById('btnDonate');
+    var btnDiscord = document.getElementById('btnDiscord');
+    if (!modal || !body || !title || !btnDonate || !btnDiscord) return;
+
+    var DISCORD = 'https://discord.com/invite/kcgQPxhde';
+    var PATREON = 'https://www.patreon.com/c/u4772250';
+    var BTC = 'bc1qa9zfgnccajsw8vg7k287qz5a7apf8pefj5jjx5';
+    var QR = 'assets/qr/';
+    var lastFocus = null;
+
+    function qrCard(img, name, linkText, href) {
+      var card = el('div', 'qr-item');
+      var im = document.createElement('img');
+      im.src = QR + img;
+      im.alt = name + ' QR code';
+      im.width = 132; im.height = 132;
+      im.loading = 'lazy';
+      card.appendChild(im);
+      card.appendChild(el('span', 'qr-name', name));
+      if (href) {
+        var a = document.createElement('a');
+        a.className = 'qr-link';
+        a.href = href;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = linkText;
+        card.appendChild(a);
+      } else if (linkText) {
+        card.appendChild(el('span', 'qr-link', linkText));
+      }
+      return card;
+    }
+
+    function buildDonate() {
+      title.textContent = 'Support the map';
+      body.textContent = '';
+      body.appendChild(el('p', 'smodal-lead',
+        'Tips keep the tiles fresh and the hosting paid for. Scan a code with your phone, or use the links. Nothing here is required.'));
+      var grid = el('div', 'qr-grid');
+
+      grid.appendChild(qrCard('patreon.png', 'Patreon', 'patreon.com/c/u4772250', PATREON));
+
+      var btcCard = el('div', 'qr-item');
+      var im = document.createElement('img');
+      im.src = QR + 'btc.png'; im.alt = 'Bitcoin QR code'; im.width = 132; im.height = 132;
+      im.loading = 'lazy';
+      // replace the placeholder btc card with one that carries the address + copy
+      btcCard.appendChild(im);
+      btcCard.appendChild(el('span', 'qr-name', 'Bitcoin'));
+      var addr = el('div', 'addr', BTC);
+      btcCard.appendChild(addr);
+      var copy = el('button', 'copy-btn', 'Copy address');
+      copy.type = 'button';
+      copy.addEventListener('click', function () {
+        var done = function () { copy.textContent = 'Copied'; setTimeout(function () { copy.textContent = 'Copy address'; }, 1600); };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(BTC).then(done, function () { toast('Copy failed — select the address manually'); });
+        } else {
+          var r = document.createRange(); r.selectNodeContents(addr);
+          var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+          try { document.execCommand('copy'); done(); } catch (e) { toast('Press Ctrl/Cmd+C to copy'); }
+        }
+      });
+      btcCard.appendChild(copy);
+
+      grid.appendChild(btcCard);
+      grid.appendChild(qrCard('lightning.png', 'Lightning', 'scan to tip', null));
+      body.appendChild(grid);
+
+      var actions = el('div', 'smodal-actions');
+      var a = document.createElement('a');
+      a.className = 'cta'; a.href = PATREON; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.textContent = 'Open Patreon';
+      actions.appendChild(a);
+      body.appendChild(actions);
+    }
+
+    function buildDiscord() {
+      title.textContent = 'Discord';
+      body.textContent = '';
+      body.appendChild(el('p', 'smodal-lead',
+        'Come say hi, report a marker that is wrong or missing, or ask for a feature. The invite opens in the app or scan the code.'));
+      var grid = el('div', 'qr-grid');
+      grid.appendChild(qrCard('discord.png', 'Discord invite', 'discord.com/invite/kcgQPxhde', DISCORD));
+      body.appendChild(grid);
+      var actions = el('div', 'smodal-actions');
+      var a = document.createElement('a');
+      a.className = 'cta alt'; a.href = DISCORD; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.textContent = 'Join the Discord';
+      actions.appendChild(a);
+      body.appendChild(actions);
+    }
+
+    function open(kind, opener) {
+      lastFocus = opener || document.activeElement;
+      (kind === 'discord' ? buildDiscord : buildDonate)();
+      modal.hidden = false;
+      document.body.classList.add('modal-open');
+      var c = document.getElementById('smodalClose');
+      if (c) c.focus();
+    }
+    function close() {
+      modal.hidden = true;
+      document.body.classList.remove('modal-open');
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    btnDonate.addEventListener('click', function () { open('donate', btnDonate); });
+    btnDiscord.addEventListener('click', function () { open('discord', btnDiscord); });
+    modal.addEventListener('click', function (e) {
+      if (e.target && e.target.hasAttribute && e.target.hasAttribute('data-sclose')) close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.hidden) { e.preventDefault(); close(); }
+    });
+  })();
+
   /* ----------------------------------------------------------- debug hook */
   window.__gta6 = {
     map: map,
