@@ -813,6 +813,7 @@ body.lb-open { overflow: hidden; }
 .support-row {
   display: flex; gap: 8px; margin: 0 0 10px;
 }
+.support-row.top { margin: 12px 0 0; }
 .sbtn {
   flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   padding: 8px 10px; font: inherit; font-size: 12px; font-weight: 600; letter-spacing: .2px;
