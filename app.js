@@ -305,7 +305,7 @@
     if (theme === 'night') {
       // night tiles are complete for the whole native pyramid (z8..z16), so the
       // night layer uses exactly the same zoom range as the day layer
-      nightLayer = makeTileLayer('night', { maxNativeZoom: 15 });  // hosted build: night ships z8-z15
+      nightLayer = makeTileLayer('night');
       nightLayer.addTo(map);
       nightLayer.setZIndex(2);
       tileLayer = nightLayer;
@@ -690,8 +690,10 @@
   function swatchCss(iconKey, size) {
     var r = ICONS[iconKey];
     if (!r) return 'width:' + size + 'px;height:' + size + 'px;background:#475569;';
-    var ratio = r.pixelRatio || 2;
-    var scale = size / (r.width / ratio);
+    // Sprite rects are in atlas pixels (2x assets). Map the rect onto a `size` CSS-px
+    // box: scale = size / rect width. Dividing by pixelRatio as well drew every icon at
+    // double its box, so thumbnails were clipped inside their circular badge.
+    var scale = size / r.width;
     return 'width:' + size + 'px;height:' + size + 'px;' +
       'background-image:url(' + (ATLAS.url || 'assets/atlas.png') + ');' +
       'background-size:' + (ATLAS.width * scale) + 'px ' + (ATLAS.height * scale) + 'px;' +
