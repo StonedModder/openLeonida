@@ -49,7 +49,9 @@
     }
     fail('Map data failed to load. ' + (detail ||
       'A data payload is missing.') +
-      ' Check that the data/ and vendor/ folders sit next to index.html and that the archive was fully extracted.');
+      (failed.length >= 4 || missing.length >= 4
+        ? ' Nothing beside index.html loaded, so this looks like the page was opened from INSIDE the zip, or from a partially extracted folder. Extract the whole archive (right-click > Extract All, or 7-Zip) and open index.html from the extracted folder.'
+        : ' Check that the data/ and vendor/ folders sit next to index.html and that the archive was fully extracted.'));
     return;
   }
 
